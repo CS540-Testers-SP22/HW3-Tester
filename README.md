@@ -54,8 +54,10 @@ One thing to note is Actions is included in a GitHub Pro account.  This comes in
 
 ## Disclaimer
 
-These tests are not endorsed or created by anyone working in an official capacity with UW Madison or any staff for CS540. The tests are make by students, for students.
+These tests are not endorsed or created by anyone working in an official capacity with UW Madison or any staff for CS540. These tests are made by students, for students.
 
 By running `test.py`, you are executing code you downloaded from the internet. Back up your files and take a look at what you are running first.
 
-If you have comments or questions, feel free to create an pull request at [https://github.com/CS540-Tester-SP22/HW3-Tester/pulls]. 
+If you have comments, questions,or contributions -- feel free to create an pull request at [https://github.com/CS540-Tester-SP22/HW3-Tester/pulls]. 
+
+If you have found this page and you are not a student in the Spring 2022 semester -- feel free to create a CS540-Tester github for your respective class and fork from this repo. 
