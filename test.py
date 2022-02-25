@@ -1,6 +1,6 @@
-__maintainer__ = ['CS540-testers-SP21']
-__author__ = ['Nicholas Beninato', 'Jesus Vazquez']
-__credits__ = ['Harrison Clark', 'Stephen Jasina', 'Saurabh Kulkarni','Alex Moon', 'Jesus Vazquez']
+__maintainer__ = ['CS540-testers-SP22']
+__author__ = ['Nicholas Beninato(SP21)', 'Jesus Vazquez(SP22)']
+__credits__ = ['Harrison Clark(SP21)', 'Stephen Jasina(SP21)', 'Saurabh Kulkarni(SP21)','Alex Moon(SP21)']
 __version__ = 'v0.2.2-modifiedSpring2022'
 
 import sys
@@ -202,6 +202,6 @@ if __name__ == '__main__':
 		del(sys.argv[path_index])
 		del(sys.argv[path_index - 1])
 
-	print('Homework 5 Tester Version', __version__)
+	print('Homework 3 Tester Version', __version__)
 
 	unittest.main(argv=sys.argv)
