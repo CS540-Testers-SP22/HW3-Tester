@@ -1,4 +1,4 @@
-# unofficial-hw3-tester
+# HW3-Tester
 
 Tests for CS540 Spring 2022 HW3: Principal Component Analysis 
 
@@ -58,4 +58,4 @@ These tests are not endorsed or created by anyone working in an official capacit
 
 By running `test.py`, you are executing code you downloaded from the internet. Back up your files and take a look at what you are running first.
 
-If you have comments or questions, feel free to create an pull request at [https://github.com/JesusVazquez-Code/hw3-tester/pulls]. 
+If you have comments or questions, feel free to create an pull request at [https://github.com/CS540-Tester-SP22/HW3-Tester/pulls]. 
