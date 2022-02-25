@@ -37,8 +37,7 @@ However, provided that `test.py`, `hw3.py`, and `YaleB_32x32.npy` are all in the
 ### Testing with GitHub Actions
 
 Background: [GitHub Actions](https://github.com/features/actions) is a [CI/CD](https://www.atlassian.com/continuous-delivery/principles/continuous-integration-vs-delivery-vs-deployment) pipeline tool.  
-If you are unfamiliar with `CI/CD`, it is a great process to familiarize yourself with as it is used almost everywhere in industry.  It is a great buzzword for interviews.  For this class, the `CI` portion of the pipeline automatically runs `test.py` any time you push changes to GitHub.  
-You will get an email from GitHub if any of the unit tests fail.  
+If you are unfamiliar with `CI/CD`, it is a great process to familiarize yourself with as it is used almost everywhere in industry.  It is a great buzzword for interviews.  For this class, the `CI` portion of the pipeline automatically runs `test.py` any time you push changes to GitHub.  You will get an email from GitHub if any of the unit tests fail.  
 The `CD` portion creates the `hw\<num>_\<net_id>.zip` file which you can download and turn in to Canvas.  
 I encourage you to give it a try, but it is beyond the scope of this course, and you may always run tests and package the zip file manually.
 
