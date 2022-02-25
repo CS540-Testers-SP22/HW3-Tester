@@ -1,10 +1,10 @@
-# hw3-tester
+# unofficial-hw3-tester
 
-Tests for CS540 Spring 2021 HW3: Principal Component Analysis 
+Tests for CS540 Spring 2022 HW3: Principal Component Analysis 
 
 ## Usage
 
-Download [test.py](test.py) and move it into the directory that contains `pca.py` and `YaleB_32x32.npy`
+Download [test.py](test.py) and move it into the directory that contains `hw3.py` and `YaleB_32x32.npy`
 
 The contents of your directory should look like this:
 
@@ -12,8 +12,9 @@ The contents of your directory should look like this:
 $ tree
 .
 ├── YaleB_32x32.npy
-├── pca.py
-└── test.py
+├── hw3.py
+├── test.py
+└── hw3.pdf
 ```
 
 To run the tests, do
@@ -22,13 +23,13 @@ To run the tests, do
 $ python3 test.py
 ```
 
-It is assumed that `YaleB_32x32.npy` is present in the same directory as `test.py` and `pca.py`. If this is not the case, you can use the argument `--yale-path` like this:
+It is assumed that `YaleB_32x32.npy` is present in the same directory as `test.py` and `hw3.py`. If this is not the case, you can use the argument `--yale-path` like this:
 
 ```bash
 $ python3 test.py --yale-path path/to/YaleB_32x32.npy
 ```
 
-Ideally, you should be running `test.py` using your terminal as this README describes. If you have an issue, first try running it that way. However, provided that `test.py`, `pca.py`, and `YaleB_32x32.npy` are all in the same directory, it should work if you do `%run test.py` in Jupyter, or run it the same way you would run `pca.py` in your editor (VS Code, Pycharm, Sublime, etc).
+Ideally, you should be running `test.py` using your terminal as this README describes. If you have an issue, first try running it that way. However, provided that `test.py`, `hw3.py`, and `YaleB_32x32.npy` are all in the same directory, it should work if you do `%run test.py` in Jupyter, or run it the same way you would run `hw3.py` in your editor (VS Code, Pycharm, Sublime, etc).
 
 ### Testing with GitHub Actions
 
@@ -57,4 +58,4 @@ These tests are not endorsed or created by anyone working in an official capacit
 
 By running `test.py`, you are executing code you downloaded from the internet. Back up your files and take a look at what you are running first.
 
-If you have comments or questions, create an issue at [https://github.com/CS540-testers-SP21/hw3-tester/issues](https://github.com/CS540-testers-SP21/hw3-tester/issues) or ask in our discord at [https://discord.gg/RDFNsAxgCQ](https://discord.gg/RDFNsAxgCQ).
+If you have comments or questions, feel free to create an pull request at [https://github.com/JesusVazquez-Code/hw3-tester/pulls]. 

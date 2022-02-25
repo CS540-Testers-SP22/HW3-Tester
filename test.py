@@ -1,22 +1,16 @@
-'''
-These tests are inspired by and use code from the tests made by cs540-testers
-for the Fall 2020 semester
-
-Their version can be found here: https://github.com/cs540-testers/hw5-tester/
-'''
-
-__maintainer__ = 'CS540-testers-SP21'
-__author__ = ['Nicholas Beninato']
-__credits__ = ['Harrison Clark', 'Stephen Jasina', 'Saurabh Kulkarni', 'Alex Moon']
-__version__ = '1.0'
+__maintainer__ = ['CS540-testers-SP21']
+__author__ = ['Nicholas Beninato', 'Jesus Vazquez']
+__credits__ = ['Harrison Clark', 'Stephen Jasina', 'Saurabh Kulkarni','Alex Moon', 'Jesus Vazquez']
+__version__ = 'v0.2.2-modifiedSpring2022'
 
 import sys
 import unittest
 from time import time
 import numpy as np
-from pca import *
+from hw3 import load_and_center_dataset, get_covariance, get_eig, \
+		get_eig_prop, project_image, display_image
 
-file_path = 'YaleB_32x32.npy'
+data_path = 'YaleB_32x32.npy'
 
 def timeit(func):
     def timed_func(*args, **kwargs):
@@ -26,145 +20,188 @@ def timeit(func):
         return out
     return timed_func
 
-class TestPrincipalComponentAnalysis(unittest.TestCase):
-    @timeit
-    def test1_load_and_center_dataset(self):
-        X = load_and_center_dataset(file_path)
 
-        # Dataset needs to have the correct shape
-        self.assertEqual(X.shape, (2414, 1024))
+class TestLoadAndCenterDataset(unittest.TestCase):
+	@timeit
+	def test_load(self):
+		x = load_and_center_dataset(data_path)
 
-        # The mean should be close to 0 (account for floating point math)
-        self.assertTrue(np.isclose(X.mean(), 0.0))
+		# The dataset needs to have the correct shape
+		self.assertEqual(np.shape(x), (2414, 1024))
 
-    @timeit
-    def test2_get_covariance(self):
-        X = load_and_center_dataset(file_path)
-        S = get_covariance(X)
-
-        # S needs have size d x d
-        self.assertEqual(S.shape, (1024, 1024))
-
-        # S should be symmetric
-        self.assertTrue(np.allclose(S, S.T))
-
-        # S should have non-negative values on the diagonal
-        self.assertTrue(np.min(np.diagonal(S)) >= 0)
-
-    @timeit
-    def test3_get_eig_small(self):
-        X = load_and_center_dataset(file_path)
-        S = get_covariance(X)
-
-        Lambda, U = get_eig(S, 2)
-
-        # Eigenvalues need to have shape 2 2
-        self.assertEqual(Lambda.shape, (2, 2))
-
-        # Eigenvalues should match example
-        self.assertTrue(np.allclose(Lambda, [[1369142.41612494, 0],[0, 1341168.50476773]]))
-
-        # Eigenvectors need to have shape 2 2
-        self.assertEqual(U.shape, (1024, 2))
-
-        # Av = λv (matrix * vector = scalar * vector)
-        self.assertTrue(np.allclose(S @ U, U @ Lambda))
-
-    @timeit
-    def test4_get_eig_large(self):
-        X = load_and_center_dataset(file_path)
-        S = get_covariance(X)
-        Lambda, U = get_eig(S, 1024)
-
-        # Eigenvalues need to have shape 1024 1024
-        self.assertEqual(np.shape(Lambda), (1024, 1024))
+		# The dataset should not be constant-valued
+		self.assertNotAlmostEqual(np.max(x) - np.min(x), 0)
         
-        # Check that Lambda is diagonal
-        self.assertEqual(np.count_nonzero(
-                         Lambda - np.diag(np.diagonal(Lambda))), 0)
-        
-        # Check that Lambda is sorted in decreasing order
-        diag = np.diagonal(Lambda)
-        self.assertTrue(np.all(np.equal(diag, diag[np.argsort(-diag)])))
+	@timeit
+	def test_center(self):
+		x = load_and_center_dataset(data_path)
 
-        # Eigenvectors need to have shape 1024 1024
-        self.assertEqual(np.shape(U), (1024, 1024))
+		# Each coordinate of our dataset should average to 0
+		for i in range(np.shape(x)[1]):
+			self.assertAlmostEqual(np.sum(x[:, i]), 0)
 
-        # Av = λv (matrix * vector = scalar * vector)
-        self.assertTrue(np.all(np.isclose(S @ U, U @ Lambda)))
+class TestGetCovariance(unittest.TestCase):
+	@timeit
+	def test_shape(self):
+		x = load_and_center_dataset(data_path)
+		S = get_covariance(x)
 
-    @timeit
-    def test5_get_eig_perc_small(self):
-        X = load_and_center_dataset(file_path)
-        S = get_covariance(X)
+		# S should be square and have side length d
+		self.assertEqual(np.shape(S), (1024, 1024))
 
-        Lambda, U = get_eig_perc(S, 0.07)
+	@timeit
+	def test_values(self):
+		x = load_and_center_dataset(data_path)
+		S = get_covariance(x)
 
-        # Eigenvalues need to have shape 2 2
-        self.assertEqual(Lambda.shape, (2, 2))
+		# S should be symmetric
+		self.assertTrue(np.all(np.isclose(S, S.T)))
 
-        # Eigenvalues should match example
-        self.assertTrue(np.allclose(Lambda, [[1369142.41612494, 0],[0, 1341168.50476773]]))
+		# S should have non-negative values on the diagonal
+		self.assertTrue(np.min(np.diagonal(S)) >= 0)
 
-        # Eigenvectors need to have shape 2 2
-        self.assertEqual(U.shape, (1024, 2))
+class TestGetEig(unittest.TestCase):
+	@timeit
+	def test_small(self):
+		x = load_and_center_dataset(data_path)
+		S = get_covariance(x)
+		Lambda, U = get_eig(S, 2)
 
-        # Av = λv (matrix * vector = scalar * vector)
-        self.assertTrue(np.allclose(S @ U, U @ Lambda))
+		self.assertEqual(np.shape(Lambda), (2, 2))
+		self.assertTrue(np.all(np.isclose(
+				Lambda, [[1369142.41612494, 0], [0, 1341168.50476773]])))
 
-    @timeit
-    def test6_get_eig_perc_large(self):
-        X = load_and_center_dataset(file_path)
-        S = get_covariance(X)
-        Lambda, U = get_eig_perc(S, -1)
+		# The eigenvectors should be the columns
+		self.assertEqual(np.shape(U), (1024, 2))
+		self.assertTrue(np.all(np.isclose(S @ U, U @ Lambda)))
 
-        # Eigenvalues need to have shape 1024 1024
-        self.assertEqual(np.shape(Lambda), (1024, 1024))
-        
-        # Check that Lambda is diagonal
-        self.assertEqual(np.count_nonzero(
-                         Lambda - np.diag(np.diagonal(Lambda))), 0)
-        
-        # Check that Lambda is sorted in decreasing order
-        diag = np.diagonal(Lambda)
-        self.assertTrue(np.all(np.equal(diag, diag[np.argsort(-diag)])))
+	@timeit
+	def test_large(self):
+		x = load_and_center_dataset(data_path)
+		S = get_covariance(x)
+		Lambda, U = get_eig(S, 1024)
 
-        # Eigenvectors need to have shape 1024 1024
-        self.assertEqual(np.shape(U), (1024, 1024))
+		self.assertEqual(np.shape(Lambda), (1024, 1024))
+		# Check that Lambda is diagonal
+		self.assertEqual(np.count_nonzero(
+				Lambda - np.diag(np.diagonal(Lambda))), 0)
+		# Check that Lambda is sorted in decreasing order
+		self.assertTrue(np.all(np.equal(np.diagonal(Lambda),
+				sorted(np.diagonal(Lambda), reverse=True))))
 
-        # Av = λv (matrix * vector = scalar * vector)
-        self.assertTrue(np.all(np.isclose(S @ U, U @ Lambda)))
+		# The eigenvectors should be the columns
+		self.assertEqual(np.shape(U), (1024, 1024))
+		self.assertTrue(np.all(np.isclose(S @ U, U @ Lambda)))
 
-    @timeit
-    def test7_project_image(self):
-        X = load_and_center_dataset(file_path)
-        S = get_covariance(X)
-        Lambda, U = get_eig(S, 2)
-        projected = project_image(X[0], U)
-    
+class TestGetEigProp(unittest.TestCase):
+	@timeit
+	def test_small(self):
+		x = load_and_center_dataset(data_path)
+		S = get_covariance(x)
+		Lambda, U = get_eig_prop(S,0.07)
+
+		self.assertEqual(np.shape(Lambda), (2, 2))
+		self.assertTrue(np.all(np.isclose(
+				Lambda, [[1369142.41612494, 0], [0, 1341168.50476773]])))
+
+		# The eigenvectors should be the columns
+		self.assertEqual(np.shape(U), (1024, 2))
+		self.assertTrue(np.all(np.isclose(S @ U, U @ Lambda)))
+
+	@timeit
+	def test_large(self):
+		x = load_and_center_dataset(data_path)
+		S = get_covariance(x)
+		# This will select all eigenvalues/eigenvectors
+		Lambda, U = get_eig_prop(S, -1)
+
+		self.assertEqual(np.shape(Lambda), (1024, 1024))
+		# Check that Lambda is diagonal
+		self.assertEqual(np.count_nonzero(
+				Lambda - np.diag(np.diagonal(Lambda))), 0)
+		# Check that Lambda is sorted in decreasing order
+		self.assertTrue(np.all(np.equal(np.diagonal(Lambda),
+				sorted(np.diagonal(Lambda), reverse=True))))
+
+		# The eigenvectors should be the columns
+		self.assertEqual(np.shape(U), (1024, 1024))
+		self.assertTrue(np.all(np.isclose(S @ U, U @ Lambda)))
+
+class TestProjectImage(unittest.TestCase):
+	@timeit
+	def test_shape_orig(self):
+		x = load_and_center_dataset(data_path)
+		S = get_covariance(x)
+		_, U = get_eig(S, 2)
+		# This is the image of the "9" in the spec
+		projected = project_image(x[0], U)
+
+		self.assertEqual(np.shape(projected), (1024,))
+		self.assertAlmostEqual(np.min(projected), 0.27875793275517147)
+		self.assertAlmostEqual(np.max(projected), 93.22417310945808)
+     
+	@timeit
+	def test_shape_with_two_eig_values(self):
+		x = load_and_center_dataset(data_path)
+		S = get_covariance(x)
+		_, U = get_eig(S, 2)
+		# This is the image of the "9" in the spec
+		projected = project_image(x[3], U)
+
+		self.assertEqual(np.shape(projected), (1024,))
+		self.assertAlmostEqual(np.min(projected), -102.98135151709695)
+		self.assertAlmostEqual(np.max(projected), -2.9426401819431263)
+     
+    # Project_image will be tested with more than 2 eigen values
+	@timeit
+	def test_shape_with_five_eig_values(self):
+		x = load_and_center_dataset(data_path)
+		S = get_covariance(x)
+		_, U = get_eig(S, 5)
+		projected = project_image(x[3], U)
+
+		self.assertEqual(np.shape(projected), (1024,))
+		self.assertAlmostEqual(np.min(projected), -25.154139468874448)
+		self.assertAlmostEqual(np.max(projected), 17.02338010385981)
+
+	@timeit
+	def test_shape_with_ten_eig_values(self):
+		x = load_and_center_dataset(data_path)
+		S = get_covariance(x)
+		_, U = get_eig(S, 10)
+		projected = project_image(x[3], U)
+
+		self.assertEqual(np.shape(projected), (1024,))
+		self.assertAlmostEqual(np.min(projected), -26.8175300968181)
+		self.assertAlmostEqual(np.max(projected), 44.9530102615709)
+
+	@timeit
+	def test_shape_with_eig_values_prop(self):
+		x = load_and_center_dataset(data_path)
+		S = get_covariance(x)
+		_, U = get_eig_prop(S,0.02)
+		projected = project_image(x[3], U)
+
         # Projected needs to have shape (1024, )
-        self.assertEqual(projected.shape, (1024,))
-
-        # Example values from Canvas
-        self.assertTrue(np.allclose(projected[:3], [6.84122225,4.83901287,1.41736694]))
-        self.assertTrue(np.allclose(projected[-3:], [8.75796534,7.45916035,5.4548656]))
-
-        # Min and max values
-        self.assertTrue(np.isclose(projected.max(), 93.22417310945819))
-        self.assertTrue(np.isclose(projected.min(), 0.27875793275475225))
-
+		self.assertEqual(np.shape(projected), (1024,))
+        
+        # Example values from implemenation(Should be correct)
+		self.assertAlmostEqual(np.min(projected), -43.78744107453002)
+		self.assertAlmostEqual(np.max(projected), 42.70786536248303)
+        
 if __name__ == '__main__':
-    print(f'Running CS540 SP21 HW3 tester v{__version__}')
-    # Hack to allow different locations of YaleB_32x32.npy (done this way to allow
-    # unittest's flags to still be passed, if desired)
-    if '--yale-path' in sys.argv:
-        path_index = sys.argv.index('--yale-path') + 1
-        if path_index == len(sys.argv):
-            print('Error: must supply path after option --yale-path')
-            sys.exit(1)
-        file_path = sys.argv[path_index]
-        print(f'Using {file_path} as location of dataset')
-        del(sys.argv[path_index])
-        del(sys.argv[path_index - 1])
+	# Hack to allow different locations of YaleB_32x32.npy (
+    # done this way to allow unittest's flags to still 
+    # be passed, if desired)
+	if '--data-path' in sys.argv:
+		path_index = sys.argv.index('--data-path') + 1
+		if path_index == len(sys.argv):
+			print('Error: must supply path after option --data-path')
+			sys.exit(1)
+		data_path = sys.argv[path_index]
+		del(sys.argv[path_index])
+		del(sys.argv[path_index - 1])
 
-    unittest.main(argv=sys.argv)
+	print('Homework 5 Tester Version', __version__)
+
+	unittest.main(argv=sys.argv)

@@ -22,7 +22,7 @@ env:
   TEST_DIR: .
   NET_ID: CHANGEME
   HW_NUM: 3
-  ZIP_PATHS: pca.py
+  ZIP_PATHS: hw3.py
   PYTHON_VERSION: 3.7
 
 jobs:
